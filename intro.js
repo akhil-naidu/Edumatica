@@ -15,7 +15,7 @@ const Intro = () => {
         break;
 
       case 'updateData':
-        alert(`not yet updated`);
+        alert(`work in progress`);
         // alert(JSON.stringify(updateData));
         break;
 
