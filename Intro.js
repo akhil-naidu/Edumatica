@@ -1,24 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const Update = (props) => {
-  const [name, setName] = useState('');
-  const [username, setUsername] = useState('');
-  // const [city, setCity] = useState('');
+import Update from './Update.js';
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newData = [{ name, username }];
+const Intro = () => {
+  // saving the data;
+  const [currentData, setCurrentData] = useState('');
 
-    const updateData = async () => {
+  // Just a way for me to demonstrate the status
+  const alertFunc = (dataOf, currentData) => {
+    switch (dataOf) {
+      case 'currentData':
+        // alert(JSON.stringify(currentData));
+        alert(`check your console`);
+        console.log(currentData);
+        break;
+
+      case 'updateData':
+        alert(`Work in Progress`);
+
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  const updateFunc = (newData) => {
+    setCurrentData(newData);
+    alert(`The UI was updated accordingly`);
+  };
+
+  // useEffect to limit the number of API requests
+  useEffect(() => {
+    // fetching data from API
+    // rather than creating a db.json I'm using a live API
+    const getRandomUsers = async (size) => {
       try {
-        const data = await axios
-          .post(`https://jsonplaceholder.typicode.com/users`, newData)
-          .then((response) => {
-            // console.log(response.data);
-            // alert(JSON.stringify(response.data));
-            props.updateWithNewDate(response.data);
-          });
+        const data = await axios.get(
+          `https://jsonplaceholder.typicode.com/users`,
+        );
+
+        setCurrentData(data.data);
 
         return data;
       } catch (err) {
@@ -26,39 +49,35 @@ const Update = (props) => {
       }
     };
     // size of hardcoded
-    updateData();
-  };
+    getRandomUsers();
+  }, []);
 
-  // We can also create an individual input component, but negating it.
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name</label>
-          <input
-            type="text"
-            name="mainName"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          ></input>
-        </div>
+    <div className="intro">
+      <h1>My Starter Project</h1>
+      <button onClick={() => alertFunc(`currentData`, currentData)}>
+        Current Data
+      </button>
+      <button onClick={() => alertFunc(`updateData`, currentData)}>
+        Update Data
+      </button>
 
-        <div>
-          <label>User Name</label>
-          <input
-            type="text"
-            name="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          ></input>
-        </div>
+      <h2>Displaying First User</h2>
 
-        <div>
-          <button type="submit">Submit</button>
-        </div>
-      </form>
+      <div>
+        <strong>Name: </strong>
+        {currentData ? currentData[0].name : `not yet received`}
+        <br />
+
+        <strong>User Name: </strong>
+        {currentData ? currentData[0].username : `not yet received`}
+        <br />
+      </div>
+
+      <h2>An Edit Form</h2>
+      <Update updateWithNewDate={(newData) => updateFunc(newData)} />
     </div>
   );
 };
 
-export default Update;
+export default Intro;
