@@ -15,7 +15,7 @@ const Intro = () => {
         break;
 
       case 'updateData':
-        alert(`work in progress`);
+        alert(`Work in Progress`);
         // alert(JSON.stringify(updateData));
         break;
 
@@ -31,7 +31,7 @@ const Intro = () => {
     const getRandomUsers = async (size) => {
       try {
         const data = await axios.get(
-          `https://random-data-api.com//api/users/random_user?size=${size}`,
+          `https://jsonplaceholder.typicode.com/users`,
         );
 
         setCurrentData(data.data);
@@ -42,32 +42,39 @@ const Intro = () => {
       }
     };
     // size of hardcoded
-    getRandomUsers(1);
+    getRandomUsers();
   }, []);
 
   return (
     <div className="intro">
-      <p>This is my Starter Project</p>
       <button onClick={() => alertFunc(`currentData`, currentData)}>
         Current Data
       </button>
       <button onClick={() => alertFunc(`updateData`, currentData)}>
         Update Data
       </button>
-      <p>
-        <strong>Name:</strong>
+      {/* All users */}
+      <div>
+        <h2>All Users</h2>
         {currentData
-          ? ` ${currentData[0].first_name} ${currentData[0].last_name}`
+          ? currentData.map((user) => <div key={user.id}>{user.name}</div>)
           : `not yet received`}
-      </p>
-      <p>
-        <strong>User Name:</strong>
-        {currentData ? ` ${currentData[0].username}` : `not yet received`}
-      </p>
-      <p>
-        <strong>Location:</strong>
-        {currentData ? ` ${currentData[0].address.city}` : `not yet received`}
-      </p>
+      </div>
+
+      <h2>Displaying First User</h2>
+
+      <div>
+        <strong>Name: </strong>
+        {currentData ? currentData[0].name : `not yet received`}
+        <br />
+
+        <strong>User Name: </strong>
+        {currentData ? currentData[0].username : `not yet received`}
+        <br />
+
+        <strong>Location: </strong>
+        {currentData ? currentData[0].address.city : `not yet received`}
+      </div>
     </div>
   );
 };
